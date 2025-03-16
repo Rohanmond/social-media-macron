@@ -62,4 +62,5 @@ model Follow {
   following User      @relation("followers", fields: [followingId], references: [id])
   followingId String
   createdAt DateTime  @default(now())
+  @@unique([followerId, followingId]) // Prevent duplicate follow
 }

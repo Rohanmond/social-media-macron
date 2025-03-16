@@ -17,16 +17,6 @@ export const followUser = async (followerId: string, followingId: string) => {
     throw new AppError("Cannot follow yourself", 400);
   }
 
-  const existingFollow = await prisma.follow.findFirst({
-    where: {
-      AND: [{ followerId }, { followingId }],
-    },
-  });
-
-  if (existingFollow) {
-    throw new AppError("You are already following this user", 400);
-  }
-
   try {
     return await prisma.follow.create({
       data: {
@@ -40,14 +30,8 @@ export const followUser = async (followerId: string, followingId: string) => {
 };
 
 export const unfollowUser = async (followerId: string, followingId: string) => {
-  const existingFollow = await prisma.follow.findFirst({
-    where: {
-      AND: [{ followerId }, { followingId }],
-    },
-  });
-
-  if (!existingFollow) {
-    throw new AppError("You are not following this user", 400);
+  if (followerId === followingId) {
+    throw new AppError("Cannot unfollow yourself", 400);
   }
 
   try {
